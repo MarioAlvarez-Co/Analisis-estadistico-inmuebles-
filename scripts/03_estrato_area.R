@@ -27,11 +27,10 @@ cat("\n---> Test de hipotesis (alpha = 0.05):\n")
 cat("H0: Area estrato 5 <= Area otros estratos\n")
 cat("H1: Area estrato 5 > Area otros estratos\n\n")
 
-if (length(estrato_5) >= 30 && length(otros) >= 30) {
-  test <- t.test(estrato_5, otros, alternative = "greater", conf.level = 0.95)
-} else {
-  test <- wilcox.test(estrato_5, otros, alternative = "greater", conf.int = TRUE)
-}
+cat("Nota: Shapiro-Wilks para estrato 5 indica no normalidad (p<0.05),\n")
+cat("por lo que se usa test de Wilcoxon (Mann-Whitney) como prueba principal.\n\n")
+
+test <- wilcox.test(estrato_5, otros, alternative = "greater", conf.int = TRUE)
 print(test)
 
 cat("\n---> Conclusion:\n")
