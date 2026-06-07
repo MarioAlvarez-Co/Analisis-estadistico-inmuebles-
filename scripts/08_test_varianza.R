@@ -54,3 +54,21 @@ if (p_val < 0.05) {
   cat("NO hay evidencia suficiente para afirmar que la desviacion estandar\n")
   cat("de la administracion haya aumentado respecto a $200.836.\n")
 }
+
+jpeg(filename = "scripts/punto13_varianza.jpg", width = 800, height = 600)
+mu <- mean(admin)
+curve(dnorm(x, mean = mu, sd = sigma_0), from = mu - 4 * sigma_0,
+      to = mu + 4 * sigma_0, lwd = 2.5, col = "red",
+      main = "Comparacion de Dispersion: Desv.Est. Referencia vs Muestral",
+      xlab = "Costo de Administracion ($)", ylab = "Densidad")
+curve(dnorm(x, mean = mu, sd = s), from = mu - 4 * sigma_0,
+      to = mu + 4 * sigma_0, lwd = 2.5, col = "darkblue", add = TRUE)
+legend("topright", legend = c(
+  expression(sigma[0] * " = $200,836 (referencia)"),
+  expression(s~" = $" ~ formatC(s, format = "d", big.mark = ",") * " (muestral)")
+), col = c("red", "darkblue"), lwd = 2.5)
+text(mu + 3.5 * sigma_0, dnorm(mu + 3.5 * sigma_0, mu, sigma_0) * 0.7,
+     "La curva azul (muestral)\nes menos dispersa:\nla varianza NO aumento",
+     col = "darkblue", cex = 0.85, font = 2)
+dev.off()
+cat("\nGrafico guardado en: scripts/punto13_varianza.jpg\n")

@@ -41,3 +41,23 @@ if (test_prop$p.value < 0.05) {
   cat("NO hay evidencia suficiente para afirmar que la proporcion\n")
   cat("de inmuebles estrato 2 sea mayor que la de estrato 4.\n")
 }
+
+jpeg(filename = "scripts/punto14_estrato2vs4.jpg", width = 800, height = 600)
+props <- c(p_estrato2 * 100, p_estrato4 * 100)
+bp3 <- barplot(props, beside = TRUE,
+               col = c("lightblue", "lightyellow"),
+               border = c("darkblue", "orange"),
+               main = "Proporcion de Inmuebles: Estrato 2 vs Estrato 4",
+               ylab = "Proporcion (%)", xlab = "",
+               names.arg = c("Estrato 2", "Estrato 4"),
+               ylim = c(0, 45), las = 1)
+text(bp3, props + 2, labels = paste0(round(props, 1), "%"),
+     col = "black", font = 2, cex = 1.2)
+text(bp3[1], props[1] / 2, paste0("n=", n_estrato2), col = "white", font = 2, cex = 1)
+text(bp3[2], props[2] / 2, paste0("n=", n_estrato4), col = "black", font = 2, cex = 1)
+pval_str <- if (test_prop$p.value < 0.001) "< 0.001" else paste0("= ", round(test_prop$p.value, 4))
+text(mean(bp3), max(props) + 4,
+     paste0("p-valor ", pval_str, " (H1: p2 > p4)"),
+     col = "darkred", font = 2, cex = 1)
+dev.off()
+cat("\nGrafico guardado en: scripts/punto14_estrato2vs4.jpg\n")

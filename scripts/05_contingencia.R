@@ -46,3 +46,13 @@ if (test_inf$p.value < 0.05) {
   cat("NO existe evidencia de asociacion significativa entre\n")
   cat("remodelado y numero de elevadores.\n")
 }
+
+jpeg(filename = "scripts/punto8_contingencia.jpg", width = 800, height = 600)
+tabla_t <- table(datos$Remodelado, datos$Elevadores)
+barplot(tabla_t, beside = TRUE, col = c("lightcoral", "lightgreen"),
+        border = c("darkred", "darkgreen"),
+        main = "Remodelado vs Numero de Elevadores",
+        xlab = "Numero de Elevadores", ylab = "Frecuencia",
+        legend = c("No Remodelado", "Remodelado"), args.legend = list(x = "topright"))
+dev.off()
+cat("\nGrafico guardado en: scripts/punto8_contingencia.jpg\n")
