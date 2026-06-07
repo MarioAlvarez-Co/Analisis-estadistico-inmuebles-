@@ -2,7 +2,7 @@
 # 00_config.R — Carga de datos (solo R base)
 # ============================================================
 
-datos <- read.csv("grupo14.csv", header = TRUE, stringsAsFactors = FALSE)
+datos <- read.csv("grupo08.csv", header = TRUE, stringsAsFactors = FALSE)
 names(datos) <- iconv(names(datos), from = "UTF-8", to = "ASCII//TRANSLIT")
 
 datos$Administracion <- as.numeric(gsub("[^0-9]", "", as.character(datos$Administracion)))
