@@ -109,14 +109,25 @@ s  <- sd(x)
 asimetria <- m3 / (s^3)
 curtosis   <- m4 / (s^4) - 3
 
+# Medidas posicionales
+q1  <- quantile(x, probs = 0.25)
+q3  <- quantile(x, probs = 0.75)
+iqr <- IQR(x)
+p10 <- quantile(x, probs = 0.10)
+p90 <- quantile(x, probs = 0.90)
+
 medidas <- data.frame(
-  Medida = c("Media", "Mediana", "Moda", "Desviacion Estandar",
-             "Varianza", "Coef. Variacion (%)", "Min", "Max", "Rango",
+  Medida = c("Media", "Mediana", "Moda",
+             "Cuartil 1 (Q1)", "Cuartil 3 (Q3)", "Rango Intercuartilico (IQR)",
+             "Percentil 10 (P10)", "Percentil 90 (P90)",
+             "Desviacion Estandar", "Varianza", "Coef. Variacion (%)",
+             "Min", "Max", "Rango",
              "Asimetria", "Curtosis"),
   Valor = round(c(
     mean(x, na.rm = TRUE),
     median(x, na.rm = TRUE),
     moda(x),
+    q1, q3, iqr, p10, p90,
     s,
     var(x, na.rm = TRUE),
     (s / mean(x, na.rm = TRUE)) * 100,
@@ -134,6 +145,29 @@ cat("\n---> Interpretacion integral:\n")
 media_ant   <- medidas$Valor[medidas$Medida == "Media"]
 mediana_ant <- medidas$Valor[medidas$Medida == "Mediana"]
 cv_val      <- medidas$Valor[medidas$Medida == "Coef. Variacion (%)"]
+q1_val      <- medidas$Valor[medidas$Medida == "Cuartil 1 (Q1)"]
+q3_val      <- medidas$Valor[medidas$Medida == "Cuartil 3 (Q3)"]
+iqr_val     <- medidas$Valor[medidas$Medida == "Rango Intercuartilico (IQR)"]
+p10_val     <- medidas$Valor[medidas$Medida == "Percentil 10 (P10)"]
+p90_val     <- medidas$Valor[medidas$Medida == "Percentil 90 (P90)"]
+
+cat("=== MEDIDAS DE TENDENCIA CENTRAL ===\n")
+cat("Media =", media_ant, "| Mediana =", mediana_ant, "| Moda =", moda(x), "\n")
+
+cat("\n=== MEDIDAS POSICIONALES ===\n")
+cat("Q1 (25%) =", q1_val, "anos: el 25% de los inmuebles tiene", q1_val, "anos o menos.\n")
+cat("Q3 (75%) =", q3_val, "anos: el 75% de los inmuebles tiene", q3_val, "anos o menos.\n")
+cat("IQR =", iqr_val, "anos: la dispersion del 50% central es de", iqr_val, "anos.\n")
+cat("P10 =", p10_val, "anos | P90 =", p90_val, "anos: el 80% central se ubica entre",
+    p10_val, "y", p90_val, "anos.\n")
+cat("Esto indica que la mayoria de los inmuebles (P10-P90) estan en un rango\n")
+cat("de aproximadamente", p90_val - p10_val, "anos de construccion.\n")
+
+cat("\n=== MEDIDAS DE DISPERSION ===\n")
+cat("Desviacion Estandar =", round(s, 2), "| Varianza =", round(var(x), 2), "\n")
+cat("CV =", round(cv_val, 2), "% | Rango =", max(x) - min(x), "anos\n")
+
+cat("\n=== MEDIDAS DE FORMA ===\n")
 
 if (asimetria > 0.5) {
   cat("La distribucion es ASIMETRICA A LA DERECHA (g1 =", round(asimetria, 3), ").\n")
@@ -167,12 +201,20 @@ hist(datos$Antiguedad, freq = FALSE, col = "lightgreen", border = "darkgreen",
      xlim = c(-2, 42), ylim = c(0, 0.06))
 curve(dnorm(x, mean = mean(datos$Antiguedad), sd = sd(datos$Antiguedad)),
       from = -2, to = 42, add = TRUE, col = "darkblue", lwd = 2)
+rect(q1_val, -0.001, q3_val, 0.058, col = rgb(0.5, 0, 0.5, 0.12), border = NA)
+abline(v = q1_val, col = "purple", lwd = 2, lty = 3)
+abline(v = q3_val, col = "purple", lwd = 2, lty = 3)
 abline(v = media_ant, col = "red", lwd = 2, lty = 1)
 abline(v = mediana_ant, col = "orange", lwd = 2, lty = 2)
-legend("topright", legend = c(paste0("Media: ", media_ant, " anos"),
-                              paste0("Mediana: ", mediana_ant, " anos"),
-                              "Curva normal teorica"),
-       col = c("red", "orange", "darkblue"), lwd = 2, lty = c(1, 2, 1))
-text(media_ant + 2, 0.05, expression(bar(x) > median), col = "red", cex = 1.1)
+legend("topright",
+       legend = c(paste0("Media: ", media_ant, " anos"),
+                  paste0("Mediana: ", mediana_ant, " anos"),
+                  paste0("Q1: ", q1_val, " | Q3: ", q3_val, " | IQR: ", iqr_val),
+                  "Curva normal teorica",
+                  "50% central (IQR)"),
+       col = c("red", "orange", "purple", "darkblue", rgb(0.5, 0, 0.5, 0.4)),
+       lwd = c(2, 2, 2, 2, 8), lty = c(1, 2, 3, 1, 1),
+       bg = "white", cex = 0.8)
+text(media_ant + 2, 0.05, expression(bar(x) > Q[2]), col = "red", cex = 1.1)
 dev.off()
 cat("\nGrafico guardado en: scripts/punto4_antiguedad.jpg\n")
