@@ -29,8 +29,10 @@ tabla_frec_agrupada <- function(x, nombre = "Variable", n_clases = 8) {
   rel    <- prop.table(freq) * 100
   acum   <- cumsum(rel)
   marcas <- (cortes[-1] + cortes[-length(cortes)]) / 2
+  fmt <- function(v) format(round(v, 0), big.mark = ",", scientific = FALSE)
+  nombres_limpios <- paste0("[", fmt(cortes[-length(cortes)]), " - ", fmt(cortes[-1]), ")")
   data.frame(
-    Intervalo = names(freq),
+    Intervalo = nombres_limpios[seq_along(freq)],
     ni = as.integer(freq),
     hi = round(as.numeric(rel), 2),
     Ni = round(as.numeric(acum), 2),

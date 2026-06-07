@@ -111,7 +111,7 @@ cv_val      <- medidas$Valor[medidas$Medida == "Coef. Variacion (%)"]
 if (asimetria > 0.5) {
   cat("La distribucion es ASIMETRICA A LA DERECHA (g1 =", round(asimetria, 3), ").\n")
   cat("La media (", media_ant, ") es mayor que la mediana (", mediana_ant, "),\n")
-  cat("indicando que valores extremos altos puxxlan la media hacia la derecha.\n")
+  cat("indicando que valores extremos puxxlan la media hacia la derecha.\n")
 } else if (asimetria < -0.5) {
   cat("La distribucion es ASIMETRICA A LA IZQUIERDA (g1 =", round(asimetria, 3), ").\n")
 } else {
